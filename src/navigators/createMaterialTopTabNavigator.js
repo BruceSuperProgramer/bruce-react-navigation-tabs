@@ -1,16 +1,16 @@
 /* @flow */
 
-import * as React from 'react';
-import { View, Platform } from 'react-native';
-import { polyfill } from 'react-lifecycles-compat';
-import { TabView, PagerPan } from 'react-native-tab-view';
+import * as React from "react";
+import { View, Platform } from "react-native";
+import { polyfill } from "react-lifecycles-compat";
+import { TabView, PagerPan } from "react-native-tab-view";
 import createTabNavigator, {
-  type InjectedProps,
-} from '../utils/createTabNavigator';
+  type InjectedProps
+} from "../utils/createTabNavigator";
 import MaterialTopTabBar, {
-  type TabBarOptions,
-} from '../views/MaterialTopTabBar';
-import ResourceSavingScene from '../views/ResourceSavingScene';
+  type TabBarOptions
+} from "../views/MaterialTopTabBar";
+import ResourceSavingScene from "../views/ResourceSavingScene";
 
 type Props = InjectedProps & {
   animationEnabled?: boolean,
@@ -19,25 +19,25 @@ type Props = InjectedProps & {
   swipeEnabled?: boolean,
   tabBarComponent?: React.ComponentType<*>,
   tabBarOptions?: TabBarOptions,
-  tabBarPosition?: 'top' | 'bottom',
+  tabBarPosition?: "top" | "bottom"
 };
 
 type State = {
   index: number,
   isSwiping: boolean,
   loaded: Array<number>,
-  transitioningFromIndex: ?number,
+  transitioningFromIndex: ?number
 };
 
 class MaterialTabView extends React.PureComponent<Props, State> {
   static defaultProps = {
     // fix for https://github.com/react-native-community/react-native-tab-view/issues/312
     initialLayout: Platform.select({
-      android: { width: 1, height: 0 },
+      android: { width: 1, height: 0 }
     }),
     animationEnabled: true,
     lazy: false,
-    optimizationsEnabled: false,
+    optimizationsEnabled: false
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -51,7 +51,7 @@ class MaterialTabView extends React.PureComponent<Props, State> {
       loaded: prevState.loaded.includes(index)
         ? prevState.loaded
         : [...prevState.loaded, index],
-      index,
+      index
     };
   }
 
@@ -59,7 +59,7 @@ class MaterialTabView extends React.PureComponent<Props, State> {
     index: 0,
     isSwiping: false,
     loaded: [this.props.navigation.state.index],
-    transitioningFromIndex: null,
+    transitioningFromIndex: null
   };
 
   _renderIcon = ({ focused, route, tintColor }) => {
@@ -68,7 +68,7 @@ class MaterialTabView extends React.PureComponent<Props, State> {
     const options = descriptor.options;
 
     if (options.tabBarIcon) {
-      return typeof options.tabBarIcon === 'function'
+      return typeof options.tabBarIcon === "function"
         ? options.tabBarIcon({ tintColor, focused })
         : options.tabBarIcon;
     }
@@ -89,7 +89,7 @@ class MaterialTabView extends React.PureComponent<Props, State> {
     const {
       tabBarComponent: TabBarComponent = MaterialTopTabBar,
       tabBarPosition,
-      tabBarOptions,
+      tabBarOptions
     } = this.props;
 
     if (TabBarComponent === null || !tabBarVisible) {
@@ -121,7 +121,7 @@ class MaterialTabView extends React.PureComponent<Props, State> {
     if (lazy) {
       this.setState({
         transitioningFromIndex: null,
-        isSwiping: false,
+        isSwiping: false
       });
     }
   };
@@ -139,9 +139,9 @@ class MaterialTabView extends React.PureComponent<Props, State> {
             Math.min(
               navigation.state.index + 1,
               navigation.state.routes.length - 1
-            ),
-          ]),
-        ],
+            )
+          ])
+        ]
       });
     }
   };
@@ -151,7 +151,7 @@ class MaterialTabView extends React.PureComponent<Props, State> {
 
     if (lazy && animationEnabled) {
       this.setState({
-        transitioningFromIndex: navigation.state.index || 0,
+        transitioningFromIndex: navigation.state.index || 0
       });
     }
 
@@ -191,7 +191,7 @@ class MaterialTabView extends React.PureComponent<Props, State> {
 
       const mustBeVisible = this._mustBeVisible({
         index,
-        focused: navigation.isFocused(),
+        focused: navigation.isFocused()
       });
 
       if (!loaded.includes(index) && !mustBeVisible) {
@@ -234,7 +234,16 @@ class MaterialTabView extends React.PureComponent<Props, State> {
         ? this.props.swipeEnabled
         : options.swipeEnabled;
 
-    if (typeof swipeEnabled === 'function') {
+    // console.log("state:", state);
+    // console.log("route:", route);
+
+    if (route.key === "Profile") {
+      if (route.index === 1) {
+        swipeEnabled = false;
+      }
+    }
+
+    if (typeof swipeEnabled === "function") {
       swipeEnabled = swipeEnabled(state);
     }
 

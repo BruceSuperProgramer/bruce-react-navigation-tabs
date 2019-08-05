@@ -206,12 +206,13 @@ class MaterialTabView extends React.PureComponent {
     const descriptor = descriptors[route.key];
     const options = descriptor.options;
 
-    console.log("state:", state);
-    console.log("route:", route);
     let swipeEnabled =
       options.swipeEnabled == null
         ? this.props.swipeEnabled
         : options.swipeEnabled;
+
+    // console.log("state:", state);
+    // console.log("route:", route);
 
     if (route.key === "Profile") {
       if (route.index === 1) {
