@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { View, Platform } from 'react-native';
-import { polyfill } from 'react-lifecycles-compat';
-import { TabView, PagerPan } from 'react-native-tab-view';
-import createTabNavigator from '../utils/createTabNavigator';
-import MaterialTopTabBar from '../views/MaterialTopTabBar';
-import ResourceSavingScene from '../views/ResourceSavingScene';
+import * as React from "react";
+import { View, Platform } from "react-native";
+import { polyfill } from "react-lifecycles-compat";
+import { TabView, PagerPan } from "react-native-tab-view";
+import createTabNavigator from "../utils/createTabNavigator";
+import MaterialTopTabBar from "../views/MaterialTopTabBar";
+import ResourceSavingScene from "../views/ResourceSavingScene";
 
 class MaterialTabView extends React.PureComponent {
   static defaultProps = {
@@ -25,7 +25,9 @@ class MaterialTabView extends React.PureComponent {
     }
 
     return {
-      loaded: prevState.loaded.includes(index) ? prevState.loaded : [...prevState.loaded, index],
+      loaded: prevState.loaded.includes(index)
+        ? prevState.loaded
+        : [...prevState.loaded, index],
       index
     };
   }
@@ -43,7 +45,9 @@ class MaterialTabView extends React.PureComponent {
     const options = descriptor.options;
 
     if (options.tabBarIcon) {
-      return typeof options.tabBarIcon === 'function' ? options.tabBarIcon({ tintColor, focused }) : options.tabBarIcon;
+      return typeof options.tabBarIcon === "function"
+        ? options.tabBarIcon({ tintColor, focused })
+        : options.tabBarIcon;
     }
 
     return null;
@@ -56,7 +60,8 @@ class MaterialTabView extends React.PureComponent {
     const descriptor = descriptors[route.key];
     const options = descriptor.options;
 
-    const tabBarVisible = options.tabBarVisible == null ? true : options.tabBarVisible;
+    const tabBarVisible =
+      options.tabBarVisible == null ? true : options.tabBarVisible;
 
     const {
       tabBarComponent: TabBarComponent = MaterialTopTabBar,
@@ -70,7 +75,18 @@ class MaterialTabView extends React.PureComponent {
 
     return (
       /* $FlowFixMe */
-      <TabBarComponent {...tabBarOptions} {...props} tabBarPosition={tabBarPosition} screenProps={this.props.screenProps} navigation={this.props.navigation} getLabelText={this.props.getLabelText} getAccessibilityLabel={this.props.getAccessibilityLabel} getTestID={this.props.getTestID} renderIcon={this._renderIcon} onTabPress={this.props.onTabPress} />
+      <TabBarComponent
+        {...tabBarOptions}
+        {...props}
+        tabBarPosition={tabBarPosition}
+        screenProps={this.props.screenProps}
+        navigation={this.props.navigation}
+        getLabelText={this.props.getLabelText}
+        getAccessibilityLabel={this.props.getAccessibilityLabel}
+        getTestID={this.props.getTestID}
+        renderIcon={this._renderIcon}
+        onTabPress={this.props.onTabPress}
+      />
     );
   };
 
@@ -93,7 +109,16 @@ class MaterialTabView extends React.PureComponent {
     if (lazy) {
       this.setState({
         isSwiping: true,
-        loaded: [...new Set([...this.state.loaded, Math.max(navigation.state.index - 1, 0), Math.min(navigation.state.index + 1, navigation.state.routes.length - 1)])]
+        loaded: [
+          ...new Set([
+            ...this.state.loaded,
+            Math.max(navigation.state.index - 1, 0),
+            Math.min(
+              navigation.state.index + 1,
+              navigation.state.routes.length - 1
+            )
+          ])
+        ]
       });
     }
   };
@@ -115,7 +140,9 @@ class MaterialTabView extends React.PureComponent {
     const { isSwiping, transitioningFromIndex } = this.state;
 
     if (isSwiping) {
-      const isSibling = navigation.state.index === index - 1 || navigation.state.index === index + 1;
+      const isSibling =
+        navigation.state.index === index - 1 ||
+        navigation.state.index === index + 1;
 
       if (isSibling) {
         return true;
@@ -149,9 +176,11 @@ class MaterialTabView extends React.PureComponent {
       }
 
       if (optimizationsEnabled) {
-        return <ResourceSavingScene isVisible={mustBeVisible}>
+        return (
+          <ResourceSavingScene isVisible={mustBeVisible}>
             {renderScene({ route })}
-          </ResourceSavingScene>;
+          </ResourceSavingScene>
+        );
       }
     }
 
@@ -177,9 +206,20 @@ class MaterialTabView extends React.PureComponent {
     const descriptor = descriptors[route.key];
     const options = descriptor.options;
 
-    let swipeEnabled = options.swipeEnabled == null ? this.props.swipeEnabled : options.swipeEnabled;
+    console.log("state:", state);
+    console.log("route:", route);
+    let swipeEnabled =
+      options.swipeEnabled == null
+        ? this.props.swipeEnabled
+        : options.swipeEnabled;
 
-    if (typeof swipeEnabled === 'function') {
+    if (route.key === "Profile") {
+      if (route.index === 1) {
+        swipeEnabled = false;
+      }
+    }
+
+    if (typeof swipeEnabled === "function") {
       swipeEnabled = swipeEnabled(state);
     }
 
@@ -187,9 +227,23 @@ class MaterialTabView extends React.PureComponent {
       renderPager = this._renderPanPager;
     }
 
-    return <TabView {...rest} navigationState={navigation.state} animationEnabled={animationEnabled} swipeEnabled={swipeEnabled} onAnimationEnd={this._handleAnimationEnd} onIndexChange={this._handleIndexChange} onSwipeStart={this._handleSwipeStart} renderPager={renderPager} renderTabBar={this._renderTabBar} renderScene={
-    /* $FlowFixMe */
-    this._renderScene} />;
+    return (
+      <TabView
+        {...rest}
+        navigationState={navigation.state}
+        animationEnabled={animationEnabled}
+        swipeEnabled={swipeEnabled}
+        onAnimationEnd={this._handleAnimationEnd}
+        onIndexChange={this._handleIndexChange}
+        onSwipeStart={this._handleSwipeStart}
+        renderPager={renderPager}
+        renderTabBar={this._renderTabBar}
+        renderScene={
+          /* $FlowFixMe */
+          this._renderScene
+        }
+      />
+    );
   }
 }
 
